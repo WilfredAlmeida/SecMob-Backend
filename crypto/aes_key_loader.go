@@ -12,7 +12,6 @@ func LoadAESKey(path string) {
 		utils.MLogger.ErrorLog(err.Error())
 	}
 
-	//Auto generated to close key file
 	defer func(aesKeyFile *os.File) {
 		err := aesKeyFile.Close()
 		if err != nil {
