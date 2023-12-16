@@ -30,6 +30,7 @@ require (
 require (
 	github.com/fsnotify/fsnotify v1.5.4
 	github.com/gin-gonic/gin v1.9.1
+	github.com/joho/godotenv v1.5.1
 )
 
 go 1.21
