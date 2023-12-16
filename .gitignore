@@ -1,2 +1,6 @@
-.env
 .idea
+*.pem
+.env
+test.go
+*.log
+*.exe
