@@ -1,16 +1,18 @@
 {
-  "commands": [
-    {
-      "title": "Get Docker Images",
-      "command": "docker image ls"
-    },
-    {
-      "title": "Echo Hi",
-      "command": "echo 'hi'"
-    },
-    {
-      "title": "Git Status",
-      "command": "git status"
-    }
-  ]
+  "userAbc": {
+    "commands": [
+      {
+        "title": "Get Docker Images",
+        "command": "docker image ls"
+      },
+      {
+        "title": "Echo Hi",
+        "command": "echo 'hi'"
+      },
+      {
+        "title": "Git Status",
+        "command": "git status"
+      }
+    ]
+  }
 }

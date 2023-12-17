@@ -3,6 +3,7 @@ package routes
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"main/crypto"
@@ -22,6 +23,8 @@ type CommandSchema struct {
 	Command string `json:"command"`
 	Id      string `json:"id"`
 }
+
+type UserData map[string]CommandsJsonObj
 
 type RunCommandRequestSchema struct {
 	CommandId string `json:"commandId" binding:"min=6,max=6" validate:"required"` //To change the length, adjust values here
@@ -68,6 +71,13 @@ func RunCMD(path string, args []string, debug bool) (out string, err error) {
 func RunCommandApiHandler(c *gin.Context) {
 
 	rawData, _ := c.GetRawData()
+	userId := c.GetHeader("sa-uid")
+	utils.MLogger.InfoLog(userId)
+	if userId != "" {
+		utils.MLogger.InfoLogger.SetPrefix(fmt.Sprintf("INFO %s ", userId))
+		utils.MLogger.WarnLogger.SetPrefix(fmt.Sprintf("WARN %s ", userId))
+		utils.MLogger.ErrorLogger.SetPrefix(fmt.Sprintf("ERROR %s ", userId))
+	}
 
 	rawDataQuotesTrimmed := strings.Trim(string(rawData), "\"")
 
@@ -154,11 +164,10 @@ func RunCommandApiHandler(c *gin.Context) {
 
 }
 
-var commandsJsonParsedObj CommandsJsonObj
+var commandsJsonParsedObj UserData
 
 func LoadCommandsFromFile() {
 	jsonFile, err := os.Open("./commands/commands.json")
-	// if os.Open returns an error then handle it
 	if err != nil {
 		utils.MLogger.ErrorLog(err.Error())
 	}
@@ -180,18 +189,26 @@ func LoadCommandsFromFile() {
 		return
 	}
 
-	for i := 0; i < len(commandsJsonParsedObj.CommandsJsonArray); i++ {
-		commandsJsonParsedObj.CommandsJsonArray[i].Id = utils.GenerateRandomString(6)
+	for i := 0; i < len(commandsJsonParsedObj["userAbc"].CommandsJsonArray); i++ {
+		commandsJsonParsedObj["userAbc"].CommandsJsonArray[i].Id = utils.GenerateRandomString(6)
 	}
 
 }
 
 func GetCommandsApiHandler(c *gin.Context) {
 
+	userId := c.GetHeader("sa-uid")
+	utils.MLogger.InfoLog(userId)
+	if userId != "" {
+		utils.MLogger.InfoLogger.SetPrefix(fmt.Sprintf("INFO %s ", userId))
+		utils.MLogger.WarnLogger.SetPrefix(fmt.Sprintf("WARN %s ", userId))
+		utils.MLogger.ErrorLogger.SetPrefix(fmt.Sprintf("ERROR %s ", userId))
+	}
+
 	var res []CommandResponseSchema
 
-	for i := 0; i < len(commandsJsonParsedObj.CommandsJsonArray); i++ {
-		cmd := commandsJsonParsedObj.CommandsJsonArray[i]
+	for i := 0; i < len(commandsJsonParsedObj["userAbc"].CommandsJsonArray); i++ {
+		cmd := commandsJsonParsedObj["userAbc"].CommandsJsonArray[i]
 		res = append(res, CommandResponseSchema{
 			Id:    cmd.Id,
 			Title: cmd.Title,
@@ -208,9 +225,9 @@ func GetCommandsApiHandler(c *gin.Context) {
 }
 
 func getCommandById(id string) *CommandSchema {
-	for i := 0; i < len(commandsJsonParsedObj.CommandsJsonArray); i++ {
-		if commandsJsonParsedObj.CommandsJsonArray[i].Id == id {
-			return &commandsJsonParsedObj.CommandsJsonArray[i]
+	for i := 0; i < len(commandsJsonParsedObj["userAbc"].CommandsJsonArray); i++ {
+		if commandsJsonParsedObj["userAbc"].CommandsJsonArray[i].Id == id {
+			return &commandsJsonParsedObj["userAbc"].CommandsJsonArray[i]
 		}
 	}
 	return nil
